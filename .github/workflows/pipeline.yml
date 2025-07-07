@@ -23,20 +23,14 @@ jobs:
       - name: Build JAR with Maven
         run: mvn clean package -DskipTests
 
-      - name: Download JAR Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: sunuq-jar
-          path: ./downloaded
 
-
-
-      - name: Build Docker image
-        run: docker build -t tayyabk/sunduq:latest .
-
-      # Optional: Push Docker image to Docker Hub
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Push Docker image
-        run: docker push tayyabk/sunduq:latest
+#
+#      - name: Build Docker image
+#        run: docker build -t tayyabk/sunduq:latest .
+#
+#      # Optional: Push Docker image to Docker Hub
+#      - name: Log in to Docker Hub
+#        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+#
+#      - name: Push Docker image
+#        run: docker push tayyabk/sunduq:latest
