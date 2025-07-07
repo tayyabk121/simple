@@ -27,7 +27,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sunduq-jar
-          path: target/sunduq.jar
+          path: target/*.jar
+
 
       - name: Build Docker image
         run: docker build -t tayyabk/sunduq:latest .
