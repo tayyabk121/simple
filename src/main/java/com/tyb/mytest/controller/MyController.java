@@ -17,6 +17,6 @@ public class MyController {
     }
     @GetMapping("/code")
     public String code(){
-        return "hello im tayyab";
+        return "hello im tayyab khan";
     }
 }
