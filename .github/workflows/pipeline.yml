@@ -23,6 +23,12 @@ jobs:
       - name: Build JAR with Maven
         run: mvn clean package -DskipTests
 
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sunduq-jar
+          path: target/sunduq.jar
+
       - name: Build Docker image
         run: docker build -t tayyabk/sunduq:latest .
 
