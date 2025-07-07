@@ -15,7 +15,7 @@ public class MyController {
     public String simple(){
         return "simple";
     }
-    @GetMapping("/coding")
+    @GetMapping("/codingg")
     public String code(){
         return "coding";
     }
