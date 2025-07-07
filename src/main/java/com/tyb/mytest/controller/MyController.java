@@ -10,4 +10,9 @@ public class MyController {
     public String greet(){
         return "hi";
     }
+
+    @GetMapping("/simple")
+    public String simple(){
+        return "simple";
+    }
 }
