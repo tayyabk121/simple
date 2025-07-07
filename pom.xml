@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tyb</groupId>
-	<artifactId>mytest</artifactId>
+	<artifactId>Sunduq</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mytest</name>
+	<name>Sunduq</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
