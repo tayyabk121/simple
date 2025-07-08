@@ -8,17 +8,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.UUID;
 
 @RestController
 public class MyController {
 
-        @GetMapping("/")
-        public String home(@AuthenticationPrincipal OAuth2User principal) {
-            return "Welcome, " + principal.getAttribute("name");
-        }
+    @GetMapping("/home")
+    public void redirectToUaePass(HttpServletResponse response) throws IOException {
+        String clientId = "sandbox_stage";
+        String redirectUri = "https://localhost:8000";
+        String scope = "urn:uae:digitalid:profile:general";
+        String acrValues = "urn:safelayer:tws:policies:authentication:level:low";
+        String state = UUID.randomUUID().toString();
 
-        @GetMapping("/login")
-        public String login() {
-            return "<a href=\"https://stg-id.uaepass.ae/idshub/authorize?response_type=code&client_id=sandbox_stage&scope=urn:uae:digitalid:profile:general&state=HnlHOJTkTb66Y5H&redirect_uri=https://localhost:8000&acr_values=urn:safelayer:tws:policies:authentication:level:low \">Login with UAEPass</a>";
-        }
+        String url = "https://stg-id.uaepass.ae/idshub/authorize" +
+                "?response_type=code" +
+                "&client_id=" + clientId +
+                "&scope=" + URLEncoder.encode(scope, "UTF-8") +
+                "&state=" + state +
+                "&redirect_uri=" + URLEncoder.encode(redirectUri, "UTF-8") +
+                "&acr_values=" + URLEncoder.encode(acrValues, "UTF-8");
+
+        response.sendRedirect(url);
     }
+
+}
