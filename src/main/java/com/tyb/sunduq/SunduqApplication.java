@@ -1,13 +1,13 @@
-package com.tyb.mytest;
+package com.tyb.sunduq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MytestApplication {
+public class SunduqApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MytestApplication.class, args);
+		SpringApplication.run(SunduqApplication.class, args);
 	}
 
 }

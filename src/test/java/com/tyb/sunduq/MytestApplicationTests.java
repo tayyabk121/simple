@@ -1,4 +1,4 @@
-package com.tyb.mytest;
+package com.tyb.sunduq;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -10,28 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # - name: Checkout code
-      #   uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # - name: Set up Java 24
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     java-version: '24'
-      #     distribution: 'temurin'
+      - name: Set up Java 24
+        uses: actions/setup-java@v3
+        with:
+          java-version: '24'
+          distribution: 'temurin'
 
-      # - name: Build JAR with Maven
-      #   run: mvn clean package -DskipTests
-
-      # - name: Upload JAR Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: sunduq-jar
-      #     path: target/*.jar
+      - name: Build JAR with Maven
+        run: mvn clean package -DskipTests
 
       - name: Build Docker image
         run: docker build -t tayyabk/sunduq:latest .
 
-      # Optional: Push Docker image to Docker Hub
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
