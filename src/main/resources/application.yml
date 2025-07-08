@@ -1,3 +1,21 @@
 spring:
   application:
     name: sunduq
+
+  security:
+    oauth2:
+      client:
+        registration:
+          uaepass:
+            client-id: sandbox_stage
+            client-secret: sandbox_stage
+            redirect-uri: "http://localhost:8000"
+            authorization-grant-type: authorization_code
+            scope: urn:uae:digitalid:profile:general
+            client-name: UAEPass
+        provider:
+          uaepass:
+            authorization-uri: https://stg-id.uaepass.ae/idshub/authorize
+            token-uri: https://stg-id.uaepass.ae/idshub/token
+            user-info-uri: https://stg-id.uaepass.ae/idshub/userinfo
+            user-name-attribute: sub
