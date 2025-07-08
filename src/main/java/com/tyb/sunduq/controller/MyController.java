@@ -19,6 +19,6 @@ public class MyController {
 
         @GetMapping("/login")
         public String login() {
-            return "<a href=\"/oauth2/authorization/uaepass\">Login with UAEPass</a>";
+            return "<a href=\"https://stg-id.uaepass.ae/idshub/authorize?response_type=code&client_id=sandbox_stage&scope=urn:uae:digitalid:profile:general&state=HnlHOJTkTb66Y5H&redirect_uri=https://localhost:8000&acr_values=urn:safelayer:tws:policies:authentication:level:low \">Login with UAEPass</a>";
         }
     }
