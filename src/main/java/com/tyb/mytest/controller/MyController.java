@@ -90,7 +90,7 @@ public class MyController {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "User not authenticated");
         errorResponse.put("authenticated", false);
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 
     @GetMapping("/dashboard")
@@ -130,7 +130,7 @@ public class MyController {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "Access denied. Please authenticate first.");
         errorResponse.put("authenticated", false);
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 
     @GetMapping("/public/health")
@@ -151,9 +151,9 @@ public class MyController {
         response.put("version", "1.0.0");
         response.put("features", Map.of(
             "authentication", "Google OAuth2",
-            "authorization", "JWT + Session based",
+            "authorization", "Session based",
             "security", "Spring Security",
-            "sessionManagement", "HTTP Sessions"
+            "sessionManagement", "JDBC Sessions"
         ));
         response.put("endpoints", Map.of(
             "auth", "/auth/*",
@@ -181,7 +181,7 @@ public class MyController {
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "Authentication required to create data");
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 
     @PutMapping("/api/data/{id}")
@@ -203,7 +203,7 @@ public class MyController {
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "Authentication required to update data");
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 
     @DeleteMapping("/api/data/{id}")
@@ -224,6 +224,6 @@ public class MyController {
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("error", "Authentication required to delete data");
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 }

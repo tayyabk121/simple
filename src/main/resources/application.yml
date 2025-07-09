@@ -2,6 +2,27 @@ spring:
   application:
     name: sunduq
   
+  # Database configuration for session storage
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    defer-datasource-initialization: true
+  
+  # H2 Console (for development)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
   # Security OAuth2 configuration
   security:
     oauth2:
@@ -21,16 +42,21 @@ spring:
             user-name-attribute: sub
             jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 
-  # Session configuration
+  # Enhanced Session configuration
   session:
-    store-type: memory
+    store-type: jdbc
     timeout: 1800s # 30 minutes
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+      cleanup-cron: "0 */5 * * * *" # Clean up expired sessions every 5 minutes
     cookie:
       name: SUNDUQ_SESSION
       max-age: 1800s
       secure: false # Set to true in production with HTTPS
       http-only: true
       same-site: lax
+      path: /
 
 # Server configuration
 server:
@@ -44,15 +70,13 @@ server:
         max-age: 1800
         secure: false # Set to true in production
         http-only: true
-
-# JWT Configuration
-jwt:
-  secret: ${JWT_SECRET:mySecretKey}
-  expiration: 86400000 # 24 hours in milliseconds
+        same-site: lax
 
 # Logging configuration
 logging:
   level:
     com.tyb.mytest: DEBUG
     org.springframework.security: DEBUG
-    org.springframework.web: DEBUG
+    org.springframework.session: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO

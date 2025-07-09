@@ -1,7 +1,6 @@
 package com.tyb.mytest.controller;
 
 import com.tyb.mytest.model.User;
-import com.tyb.mytest.service.JwtService;
 import com.tyb.mytest.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,9 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
-    @Autowired
-    private JwtService jwtService;
 
     @Autowired
     private UserService userService;
@@ -48,24 +44,22 @@ public class AuthController {
             User user = userService.findByEmail(email);
             
             if (user != null) {
-                // Generate JWT token
-                Map<String, Object> extraClaims = new HashMap<>();
-                extraClaims.put("name", user.getName());
-                extraClaims.put("email", user.getEmail());
-                extraClaims.put("picture", user.getPicture());
-                
-                String jwtToken = jwtService.generateToken(user.getEmail(), extraClaims);
-                
-                // Create session
+                // Create session and store user information
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", user);
                 session.setAttribute("authenticated", true);
+                session.setAttribute("email", user.getEmail());
+                session.setAttribute("name", user.getName());
+                session.setAttribute("picture", user.getPicture());
+                
+                // Set session timeout (30 minutes)
+                session.setMaxInactiveInterval(1800);
                 
                 Map<String, Object> responseData = new HashMap<>();
                 responseData.put("message", "Authentication successful");
                 responseData.put("user", user);
-                responseData.put("token", jwtToken);
                 responseData.put("sessionId", session.getId());
+                responseData.put("maxInactiveInterval", session.getMaxInactiveInterval());
                 
                 return ResponseEntity.ok(responseData);
             }
@@ -102,6 +96,7 @@ public class AuthController {
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Logout failed");
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
@@ -120,8 +115,15 @@ public class AuthController {
                 Map<String, Object> response = new HashMap<>();
                 response.put("user", user);
                 response.put("authenticated", true);
+                response.put("authenticationMethod", "session");
+                
                 if (session != null) {
                     response.put("sessionId", session.getId());
+                    response.put("sessionValid", true);
+                    response.put("maxInactiveInterval", session.getMaxInactiveInterval());
+                    response.put("lastAccessedTime", session.getLastAccessedTime());
+                } else {
+                    response.put("sessionValid", false);
                 }
                 
                 return ResponseEntity.ok(response);
@@ -131,7 +133,7 @@ public class AuthController {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("authenticated", false);
         errorResponse.put("message", "User not authenticated");
-        return ResponseEntity.unauthorized().body(errorResponse);
+        return ResponseEntity.status(401).body(errorResponse);
     }
 
     @GetMapping("/session")
@@ -146,6 +148,7 @@ public class AuthController {
             response.put("lastAccessedTime", session.getLastAccessedTime());
             response.put("maxInactiveInterval", session.getMaxInactiveInterval());
             response.put("isNew", session.isNew());
+            response.put("valid", true);
             
             User user = (User) session.getAttribute("user");
             if (user != null) {
@@ -153,7 +156,38 @@ public class AuthController {
                 response.put("authenticated", session.getAttribute("authenticated"));
             }
         } else {
+            response.put("valid", false);
             response.put("message", "No active session");
+        }
+        
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<Map<String, Object>> validateSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        boolean isAuthenticated = authentication != null && 
+                                authentication.isAuthenticated() && 
+                                !"anonymousUser".equals(authentication.getName());
+        
+        boolean hasValidSession = session != null && 
+                                session.getAttribute("authenticated") != null &&
+                                (Boolean) session.getAttribute("authenticated");
+        
+        response.put("authenticated", isAuthenticated);
+        response.put("hasValidSession", hasValidSession);
+        response.put("authenticationMethod", "session");
+        
+        if (isAuthenticated && hasValidSession) {
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
+                response.put("user", user);
+            }
+            response.put("sessionId", session.getId());
         }
         
         return ResponseEntity.ok(response);
